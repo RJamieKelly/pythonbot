@@ -8,13 +8,17 @@ import datetime
 client = discord.Client()
 global discord_message
 global twitch_message
+global posted_message
+posted_message = "not_test"
+twitch_message = "test"
 
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     # await test_function()
-   # await timer()
+    await twitch_to_discord()
+    await asyncio.sleep(1)
 
 
 @client.event
@@ -45,7 +49,8 @@ class Bot(commands.Bot):
         # Initialise our Bot with our access token, prefix and a list of channels to join on boot...
         # prefix can be a callable, which returns a list of strings or a string...
         # initial_channels can also be a callable which returns a list of strings...
-        super().__init__(token='o15e3ka0oovmbs4iaehr4rumgghcv0', prefix='?', initial_channels=['bjoc_bot'])
+        super().__init__(token='o15e3ka0oovmbs4iaehr4rumgghcv0', prefix='?',
+                         initial_channels=['pokegaard', 'reckful', 'bjoc_bot'])
 
     async def test_function(self):
         print("hello")
@@ -60,6 +65,7 @@ class Bot(commands.Bot):
         print(f'Logged in as | {self.nick}')
         print(f'User id is | {self.user_id}')
 
+    # returns the twitch message in a variable
     async def event_message(self, message):
         global twitch_message
 
@@ -79,42 +85,26 @@ class Bot(commands.Bot):
         await self.handle_commands(message)
         return twitch_message
 
-    @commands.command()
-    async def hello(self, ctx: commands.Context):
-        # Here we have a command hello, we can invoke our command with our prefix and command name
-        # e.g ?hello
-        # We can also give our commands aliases (different names) to invoke with.
 
-        # Send a hello back!
-        # Sending a reply back to the channel is easy... Below is an example.
-        await ctx.send(f'Hello {ctx.author.name}!')
-
-
-async def timer():
+async def twitch_to_discord():
     print("hello")
     bot = Bot()
     time = datetime.datetime.now
-    posted_message = ""
+    global posted_message
     global twitch_message
-    twitch_message = twitch_message
-    channel = client.get_channel(895284133520097314)  # replace with channel ID that you want to send to
+    channel = client.get_channel(1004070964105056338)  # replace with channel ID that you want to send to
     msg_sent = False
-
-    while posted_message != twitch_message:
-        if True:
-            await channel.send(twitch_message)
-            posted_message = twitch_message
-        else:
-            msg_sent = True
-        await asyncio.sleep(1)
-
-
-@client.event
-async def test_function():
-    print("hello")
-    print("hello")
-    channel = client.get_channel(895284133520097314)
-    await channel.send('hello')
+    while not msg_sent:
+        while posted_message != twitch_message:
+            print("hello")
+            if True:
+                await channel.send("pjoc or bjoc: " + twitch_message)
+                twitch_message = posted_message
+                print(posted_message + "posted \n")
+                print(twitch_message + "twitch \n")
+                await twitch_to_discord()
+    else:
+        msg_sent = True
     await asyncio.sleep(1)
 
 
